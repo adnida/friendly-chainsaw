@@ -9,7 +9,6 @@ contract RestaurantsTest {
 
     function testRegisterRestaurant() public {
         address _address;
-        bool isRestaurant;
         string memory name;
         string memory businessAddress;
 
