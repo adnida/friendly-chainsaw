@@ -6,9 +6,11 @@ contract Customers {
         string deliveryAddress;
     }
 
-    mapping (uint => Customer) customers;
+    mapping (address => Customer) public customers;
+    event CustomerRegisteredEvent(address customerAddress, string deliveryAddress);
 
-    function addCustomer() {
-
+    function registerAsCustomer(string deliveryAddress) public {
+        customers[msg.sender].deliveryAddress = deliveryAddress;
+        emit CustomerRegisteredEvent(msg.sender, deliveryAddress);
     }
 }
