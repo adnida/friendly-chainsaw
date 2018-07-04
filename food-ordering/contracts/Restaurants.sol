@@ -4,6 +4,7 @@ contract Restaurants {
     struct MenuItem {
         string name;
         uint price;
+        bool isActive;
     }
 
     struct Restaurant {
@@ -36,13 +37,13 @@ contract Restaurants {
         return (name, businessAddress);
     }
 
-    function checkIsRestaurant(address _address) internal view returns (bool) {
+    function checkIsRestaurant(address _address) public view returns (bool) {
         return restaurants[_address].isRestaurant;
     }
 
     function addMenuItem(string name, uint price) public {
         require(checkIsRestaurant(msg.sender));
-        restaurantMenu[msg.sender].push(MenuItem(name, price));
+        restaurantMenu[msg.sender].push(MenuItem(name, price, true));
         emit MenuItemAddedEvent(msg.sender, name, price);
     }
 
