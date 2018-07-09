@@ -6,9 +6,10 @@ contract("Customers", accounts => {
 
     it("can register as a customer", async() => {
       instance = await Customers.new();
+
       let expectedDeliveryAddress = "5 Stevens Drive #01-01";
       await instance.registerAsCustomer(expectedDeliveryAddress, { from: account1 });
-      let deliveryAddress = await instance.customers(account1);
+      let [deliveryAddress, isCustomer] = await instance.customers(account1);
 
       assert.equal(deliveryAddress, expectedDeliveryAddress);
     });
