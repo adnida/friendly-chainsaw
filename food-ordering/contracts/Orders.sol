@@ -3,37 +3,39 @@ pragma solidity ^0.4.18;
 contract Orders {
     Restaurants restaurants;
     Customers customers;
+    uint orderseq;
 
     constructor(address restaurantsContractAddress, address customersContractAddress) public {
         restaurants = Restaurants(restaurantsContractAddress);
         customers = Customers(customersContractAddress);
+        orderseq = 0;
     }
 
     enum OrderStatus { Ordered, Prepared, Delivered, Cancelled }
 
     struct Order {
-        uint uuid;
         address customer;
         address restaurant;
         uint[] menuItems;
         uint[] quantities;
         OrderStatus status;
         uint lastUpdated;
+
         bool isOrder;
     }
 
+    mapping(uint => Order) public orders;
     mapping(address => Order[]) public customerOrders;
     mapping(address => Order[]) public restaurantOrders;
 
-    event OrderSubmittedEvent(address customer, address restaurant, uint uuid);
-    event OrderUpdatedEvent(uint uuid);
+    event OrderSubmittedEvent(address customer, address restaurant, uint orderId);
+    event OrderUpdatedEvent(uint orderId);
 
-    function submitOrder(uint uuid, address restaurant, uint[] menuItems, uint[] quantities) public {
+    function submitOrder(address restaurant, uint[] menuItems, uint[] quantities) public {
         require (customers.checkIsCustomer(msg.sender));
         require (restaurants.checkIsRestaurant(restaurant));
 
         Order memory order = Order({
-            uuid: uuid,
             customer: msg.sender,
             restaurant: restaurant,
             quantities: quantities,
@@ -43,9 +45,12 @@ contract Orders {
             isOrder: true
         });
 
+        uint orderId = ++orderseq;
+
+        orders[orderId] = order;
         customerOrders[msg.sender][customerOrders[msg.sender].length] = order;
         restaurantOrders[restaurant][restaurantOrders[restaurant].length] = order;
-        emit OrderSubmittedEvent(msg.sender, restaurant, uuid);
+        emit OrderSubmittedEvent(msg.sender, restaurant, orderId);
     }
 }
 
