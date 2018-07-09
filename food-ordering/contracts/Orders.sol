@@ -52,14 +52,38 @@ contract Orders {
         restaurantOrders[restaurant][restaurantOrders[restaurant].length] = order;
         emit OrderSubmittedEvent(msg.sender, restaurant, orderId);
     }
+
+    function checkIsOrder(uint orderId) public view returns (bool) {
+        return orders[orderId].isOrder;
+    }
+
+    function getOrder(uint orderId) public view returns (
+        address customer,
+        address restaurant,
+        uint[] menuItems,
+        uint[] quantities,
+        uint status,
+        uint lastUpdated
+    ) {
+        require(checkIsOrder(orderId));
+        return(
+            orders[orderId].customer,
+            orders[orderId].restaurant,
+            orders[orderId].menuItems,
+            orders[orderId].quantities,
+            uint(orders[orderId].status),
+            orders[orderId].lastUpdated
+        );
+    }
 }
 
 contract Restaurants {
-    function checkIsRestaurant(address _address) public pure returns (bool) {}
-    function getRestaurant(address _address) public pure returns (string, string) {}
-    function getMenuItem(address _address, uint index) public pure returns (string, uint) {}
+    function checkIsRestaurant(address _address) public pure returns (bool) { _address; }
+    function getRestaurant(address _address) public pure returns (string, string) { _address; }
+    function getMenuItem(address _address, uint index) public pure returns (string, uint) { _address; index; }
 }
 
 contract Customers {
-    function checkIsCustomer(address _address) public pure returns (bool) {}
+    function registerAsCustomer(string deliveryAddress) public pure { deliveryAddress; }
+    function checkIsCustomer(address _address) public pure returns (bool) { _address; }
 }
