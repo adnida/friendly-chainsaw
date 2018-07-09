@@ -5,6 +5,7 @@ contract Restaurants {
         string name;
         uint price;
         bool isActive;
+        bool isMenuItem;
     }
 
     struct Restaurant {
@@ -43,12 +44,23 @@ contract Restaurants {
 
     function addMenuItem(string name, uint price) public {
         require(checkIsRestaurant(msg.sender));
-        restaurantMenu[msg.sender].push(MenuItem(name, price, true));
+        restaurantMenu[msg.sender].push(MenuItem(name, price, true, true));
         emit MenuItemAddedEvent(msg.sender, name, price);
     }
 
+    function checkIsMenuItem(address restaurant, uint index) public view returns (bool) {
+        return restaurantMenu[restaurant][index].isMenuItem;
+    }
+
+    function checkIsMenuItemActive(address restaurant, uint index) public view returns (bool) {
+        return restaurantMenu[restaurant][index].isActive;
+    }
+
     function getMenuItem(address _address, uint index) public view returns (string, uint) {
-        require(checkIsRestaurant(_address));
-        return (restaurantMenu[msg.sender][index].name, restaurantMenu[msg.sender][index].price);
+        require(checkIsRestaurant(_address), "Restaurant not found");
+        require(checkIsMenuItem(_address, index), "Menu item not found");
+        require(checkIsMenuItemActive(_address, index), "Menu item deleted");
+
+        return (restaurantMenu[_address][index].name, restaurantMenu[_address][index].price);
     }
 }
