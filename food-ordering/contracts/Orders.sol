@@ -48,8 +48,8 @@ contract Orders {
         uint orderId = ++orderseq;
 
         orders[orderId] = order;
-        customerOrders[msg.sender][customerOrders[msg.sender].length] = order;
-        restaurantOrders[restaurant][restaurantOrders[restaurant].length] = order;
+        customerOrders[msg.sender].push(order);
+        restaurantOrders[restaurant].push(order);
         emit OrderSubmittedEvent(msg.sender, restaurant, orderId);
     }
 
