@@ -4,11 +4,8 @@ contract("Restaurants", accounts => {
   const [account1, account2, account3] = accounts;
   let instance;
 
-  beforeEach(async () => {
-  });
-
   it("can register as a restaurant", async () => {
-    instance = await Restaurants.new();
+    instance = await Restaurants.deployed();
     let expectedName = "Restaurant One";
     let expectedBusinessAddress = "One Marina Boulevard";
 
@@ -28,5 +25,10 @@ contract("Restaurants", accounts => {
 
     assert.equal(menuItem[0], expectedName);
     assert.equal(menuItem[1], expectedPrice);
+  });
+
+  it("can validate a restaurant", async() => {
+      assert(await instance.checkIsRestaurant(account1));
+      assert.equal(await instance.checkIsRestaurant(account2), false);
   });
 });
