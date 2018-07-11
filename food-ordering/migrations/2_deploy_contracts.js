@@ -9,7 +9,6 @@ module.exports = function(deployer) {
 		return deployer.deploy(Customers);
 	})
 	.then(() => {
-		console.log("Customers contract deployed at", Customers.address);
 		return deployer.deploy(Orders, Restaurants.address, Customers.address);
 	})
 	.then(() => {
